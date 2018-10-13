@@ -1,0 +1,83 @@
+extends layout
+
+block content
+  .container
+    h1.display-4 Registration information
+    .card
+      .card-body
+        h3.card-title Registration stats
+        .row
+          .col-lg-4
+            h5 Registrations
+            ul
+              li Full-price: #{totals.fullRegistration}
+              li Free: #{totals.freeRegistration}
+              li Total: #{totals.fullRegistration + totals.freeRegistration}
+          .col-lg-4
+            h5 Lunches
+            ul
+              li Normal: #{totals.normalLunch}
+              li Large: #{totals.largeLunch} 
+          .col-lg-4
+            h5 T-shirts
+            ul
+              li Size S: #{totals.tshirtS}
+              li Size M: #{totals.tshirtM}
+              li Size L: #{totals.tshirtL}
+              li Size XL: #{totals.tshirtXL}
+              li Total: #{totals.tshirtS + totals.tshirtM + totals.tshirtL + totals.tshirtXL}
+        p #[strong Total Revenue: ] $#{totals.revenue}.00
+    br              
+    h4 Waiting approval
+    table.table.table-striped
+      thead
+        th Name
+        th Email
+        th Student
+        th N-lunch
+        th L-lunch
+        th T-shirt
+        th Paid
+        th Action
+      tbody
+        each registration in unapproved
+          tr
+            td= registration.name
+            td= registration.email
+            td= registration.isShakerStudent ? 'Yes' : 'No'
+            td= registration.normalLunch
+            td= registration.largeLunch
+            td= registration.tshirt
+            td $#{registration.totalPrice}
+            td
+              button.btn.btn-success(onclick = `approve('${registration.email}')`)
+                | #[i.fas.fa-check]
+              span.space
+              button.btn.btn-danger(onclick = `remove('${registration.email}')`)
+                | #[i.fas.fa-times]
+  
+    h4 Approved
+    table.table.table-striped
+      thead
+        th Name
+        th Email
+        th Student
+        th N-lunch
+        th L-lunch
+        th T-shirt
+        th Paid
+        th Action
+      tbody
+        each registration in approved
+          tr
+            td= registration.name
+            td= registration.email
+            td= registration.isShakerStudent ? 'Yes' : 'No'
+            td= registration.normalLunch
+            td= registration.largeLunch
+            td= registration.tshirt
+            td $#{registration.totalPrice}
+            td
+              button.btn.btn-danger(onclick = `remove('${registration.email}')`)
+                | #[i.fas.fa-times]
+      
