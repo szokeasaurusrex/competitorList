@@ -21,7 +21,7 @@ async function approve(email) {
     const confirmMessage = "APPROVE registration for: \n" + email
     if (confirm(confirmMessage) == true) {
       let data = {email: email}
-      let response = post('/approve', data)
+      let response = await post('/approve', data)
       if (response == 'OK') {
         location.reload(true)
       } else {
@@ -38,7 +38,7 @@ async function remove(email) {
     const confirmMessage = "REMOVE registration for: \n" + email
     if (confirm(confirmMessage) == true) {
       let data = {email: email}
-      let response = post('/remove', data)
+      let response = await post('/remove', data)
       if (response == 'OK') {
         location.reload(true)
       } else {
