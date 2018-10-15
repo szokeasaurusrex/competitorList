@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
         collection.find(queryApproved).sort({date: 1}).toArray()
     let approvedUnapproved =
         await Promise.all([approvedPromise, unapprovedPromise])
-    let allRegistrations = approved.concat(unapproved)
+    let allRegistrations = approvedUnapproved[0].concat(approvedUnapproved[1])
     let totals = {
       fullRegistration: 0,
       freeRegistration: 0,
