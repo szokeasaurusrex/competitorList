@@ -15,9 +15,9 @@ router.get('/', async (req, res) => {
     let queryApproved = { approved: true }
     let queryUnapproved = { approved: false }
     let approvedPromise =
-        collection.find(queryUnapproved).sort({name: 1}).toArray()
+        collection.find(queryUnapproved).sort({date: 1}).toArray()
     let unapprovedPromise =
-        collection.find(queryApproved).sort({date: 1}).toArray()
+        collection.find(queryApproved).sort({name: 1}).toArray()
     let approvedUnapproved =
         await Promise.all([approvedPromise, unapprovedPromise])
     let allRegistrations = approvedUnapproved[0].concat(approvedUnapproved[1])
