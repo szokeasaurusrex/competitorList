@@ -21,7 +21,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(process.env.dir, 'public')));
+app.use(express.static(path.join(process.env.DIR, 'public')));
 app.use(bodyParser.json());
 
 app.use('/admin_panel', indexRouter);
