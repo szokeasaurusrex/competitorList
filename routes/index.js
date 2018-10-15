@@ -58,8 +58,8 @@ router.get('/', async (req, res) => {
       totals.revenue += registration.totalPrice
     }
     res.render('index', {
-      approved: approvedUnapproved[0],
-      unapproved: approvedUnapproved[1],
+      approved: approvedUnapproved[1],
+      unapproved: approvedUnapproved[0],
       totals: totals
     })
     db.close()
