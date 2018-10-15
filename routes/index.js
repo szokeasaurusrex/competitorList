@@ -12,9 +12,15 @@ router.get('/', async (req, res) => {
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
     let collection = db.db('cubing').collection('registrations')
-    let registrations = await collection.find({}).sort({name: 1}).toArray()
-    let unapproved = []
-    let approved = []
+    let queryApproved = { approved: true }
+    let queryUnapproved = { approved: false }
+    let approvedPromise =
+        collection.find(queryUnapproved).sort({name: 1}).toArray()
+    let unapprovedPromise =
+        collection.find(queryApproved).sort({date: 1}).toArray()
+    let approvedUnapproved =
+        await Promise.all([approvedPromise, unapprovedPromise])
+    let allRegistrations = approved.concat(unapproved)
     let totals = {
       fullRegistration: 0,
       freeRegistration: 0,
@@ -26,13 +32,8 @@ router.get('/', async (req, res) => {
       tshirtXL: 0,
       revenue: 0
     }
-    for (const registration of registrations) {
+    for (const registration of allRegistrations) {
       // count up totals
-      if (registration.approved == true) {
-        approved.push(registration)
-      } else {
-        unapproved.push(registration)
-      }
       if (registration.isShakerStudent == true) {
         totals.freeRegistration++
       } else {
@@ -57,8 +58,8 @@ router.get('/', async (req, res) => {
       totals.revenue += registration.totalPrice
     }
     res.render('index', {
-      approved: approved,
-      unapproved: unapproved,
+      approved: approvedUnapproved[0],
+      unapproved: approvedUnapproved[1],
       totals: totals
     })
     db.close()
