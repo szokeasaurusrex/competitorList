@@ -7,7 +7,7 @@ var MongoClient = require('mongodb').MongoClient
 const mongoUrl = "mongodb://localhost:27017/cubing"
 
 /* GET home page. */
-router.get('/', async (req, res) => {
+router.get('/admin_panel', async (req, res) => {
   let db
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/approve', async (req, res) => {
+router.post('/admin_panel/approve', async (req, res) => {
   let db
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
@@ -86,7 +86,7 @@ router.post('/approve', async (req, res) => {
   }
 })
 
-router.post('/remove', async (req, res) => {
+router.post('/admin_panel/remove', async (req, res) => {
   let db
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
