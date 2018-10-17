@@ -16,7 +16,7 @@ block content
           .col-lg-4
             h5 Lunches
             ul
-              li Normal: #{totals.normalLunch}
+              li Large: #{totals.largeLunch}
               li Small: #{totals.smallLunch} 
           .col-lg-4
             h5 T-shirts
@@ -34,7 +34,7 @@ block content
         th Name
         th Email
         th Student
-        th N-lunch
+        th L-lunch
         th S-lunch
         th T-shirt
         th Paid
@@ -46,7 +46,7 @@ block content
             td= registration.name
             td= registration.email
             td= registration.isShakerStudent ? 'Yes' : 'No'
-            td= registration.normalLunch
+            td= registration.largeLunch
             td= registration.smallLunch
             td= registration.tshirt
             td $#{registration.totalPrice}
@@ -64,7 +64,7 @@ block content
         th Name
         th Email
         th Student
-        th N-lunch
+        th L-lunch
         th S-lunch
         th T-shirt
         th Paid
@@ -76,7 +76,7 @@ block content
             td= registration.name
             td= registration.email
             td= registration.isShakerStudent ? 'Yes' : 'No'
-            td= registration.normalLunch
+            td= registration.largeLunch
             td= registration.smallLunch
             td= registration.tshirt
             td $#{registration.totalPrice}
