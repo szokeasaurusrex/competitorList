@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
     let totals = {
       fullRegistration: 0,
       freeRegistration: 0,
-      normalLunch: 0,
+      largeLunch: 0,
       smallLunch: 0,
       tshirtS: 0,
       tshirtM: 0,
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
       } else {
         totals.fullRegistration++
       }
-      totals.normalLunch += registration.normalLunch
+      totals.largeLunch += registration.largeLunch
       totals.smallLunch += registration.smallLunch
       switch (registration.tshirt) {
         case "S":
