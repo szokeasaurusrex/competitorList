@@ -87,6 +87,7 @@ router.get('/', async (req, res) => {
         return 0
       }
     })
+    console.log(approved)
     res.render('index', {
       approved: approved,
       unapproved: unapproved,
