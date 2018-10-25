@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
     let collection = db.db('cubing').collection('registrations')
-    let registrations = await collection.find({})
+    let registrations = await collection.find({}).toArray()
     let totals = {
       fullRegistration: 0,
       freeRegistration: 0,
@@ -26,9 +26,9 @@ router.get('/', async (req, res) => {
     }
     let approved = []
     let unapproved = []
-    for (let i = 0; i < registrations.length; i++) {
+    for (const registration of registrations) {
       // Generate date string
-      registrations[i].dateString = registrations[i].date.toLocaleString({
+      registration.dateString = registration.date.toLocaleString('en-us', {
         timeZone: 'America/New_York',
         hour12: false,
         year: "numeric",
@@ -40,14 +40,14 @@ router.get('/', async (req, res) => {
         timeZoneName: "short"
       })
       // count up totals
-      if (registrations[i].isShakerStudent == true) {
+      if (registration.isShakerStudent == true) {
         totals.freeRegistration++
       } else {
         totals.fullRegistration++
       }
-      totals.largeLunch += registrations[i].largeLunch
-      totals.smallLunch += registrations[i].smallLunch
-      switch (registrations[i].tshirt) {
+      totals.largeLunch += registration.largeLunch
+      totals.smallLunch += registration.smallLunch
+      switch (registration.tshirt) {
         case "S":
           totals.tshirtS++
           break
@@ -61,12 +61,12 @@ router.get('/', async (req, res) => {
           totals.tshirtXL++
           break
       }
-      totals.revenue += registrations[i].totalPrice
+      totals.revenue += registration.totalPrice
       // sort to approved or unapproved
-      if (registrations[i].approved) {
-        approved.append(registrations[i])
+      if (registration.approved) {
+        approved.push(registration)
       } else {
-        unapproved.append(registrations[i])
+        unapproved.push(registration)
       }
     }
     approved.sort( (a, b) => {
@@ -87,7 +87,7 @@ router.get('/', async (req, res) => {
         return 0
       }
     })
-    console.log(approved)
+    console.log(unapproved)
     res.render('index', {
       approved: approved,
       unapproved: unapproved,
