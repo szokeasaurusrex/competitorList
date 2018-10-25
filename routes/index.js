@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
     })
     res.render('index', {
       approved: approved,
-      unapproved: unapproved[0],
+      unapproved: unapproved,
       totals: totals
     })
     db.close()
