@@ -12,15 +12,7 @@ router.get('/', async (req, res) => {
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
     let collection = db.db('cubing').collection('registrations')
-    let queryApproved = { approved: true }
-    let queryUnapproved = { approved: false }
-    let approvedPromise =
-        collection.find(queryUnapproved).sort({date: 1}).toArray()
-    let unapprovedPromise =
-        collection.find(queryApproved).sort({name: 1}).toArray()
-    let approvedUnapproved =
-        await Promise.all([approvedPromise, unapprovedPromise])
-    let allRegistrations = approvedUnapproved[0].concat(approvedUnapproved[1])
+    let registrations = await collection.find({})
     let totals = {
       fullRegistration: 0,
       freeRegistration: 0,
@@ -32,16 +24,30 @@ router.get('/', async (req, res) => {
       tshirtXL: 0,
       revenue: 0
     }
-    for (const registration of allRegistrations) {
+    let approved = []
+    let unapproved = []
+    for (let i = 0; i < registrations.length; i++) {
+      // Generate date string
+      registrations[i].dateString = registrations[i].date.toLocaleString({
+        timeZone: 'America/New_York',
+        hour12: false,
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short"
+      })
       // count up totals
-      if (registration.isShakerStudent == true) {
+      if (registrations[i].isShakerStudent == true) {
         totals.freeRegistration++
       } else {
         totals.fullRegistration++
       }
-      totals.largeLunch += registration.largeLunch
-      totals.smallLunch += registration.smallLunch
-      switch (registration.tshirt) {
+      totals.largeLunch += registrations[i].largeLunch
+      totals.smallLunch += registrations[i].smallLunch
+      switch (registrations[i].tshirt) {
         case "S":
           totals.tshirtS++
           break
@@ -55,11 +61,35 @@ router.get('/', async (req, res) => {
           totals.tshirtXL++
           break
       }
-      totals.revenue += registration.totalPrice
+      totals.revenue += registrations[i].totalPrice
+      // sort to approved or unapproved
+      if (registrations[i].approved) {
+        approved.append(registrations[i])
+      } else {
+        unapproved.append(registrations[i])
+      }
     }
+    approved.sort( (a, b) => {
+      if (a.name < b.name) {
+        return -1
+      } else if (b.name > a.name) {
+        return 1
+      } else {
+        return 0
+      }
+    })
+    unapproved.sort( (a, b) => {
+      if (a.date < b.date) {
+        return -1
+      } else if (a.date > b.date) {
+        return 1
+      } else {
+        return 0
+      }
+    })
     res.render('index', {
-      approved: approvedUnapproved[1],
-      unapproved: approvedUnapproved[0],
+      approved: approved,
+      unapproved: unapproved[0],
       totals: totals
     })
     db.close()
