@@ -12,15 +12,7 @@ router.get('/', async (req, res) => {
   try {
     db = await MongoClient.connect(mongoUrl, {useNewUrlParser: true})
     let collection = db.db('cubing').collection('registrations')
-    let queryApproved = { approved: true }
-    let queryUnapproved = { approved: false }
-    let approvedPromise =
-        collection.find(queryUnapproved).sort({date: 1}).toArray()
-    let unapprovedPromise =
-        collection.find(queryApproved).sort({name: 1}).toArray()
-    let approvedUnapproved =
-        await Promise.all([approvedPromise, unapprovedPromise])
-    let allRegistrations = approvedUnapproved[0].concat(approvedUnapproved[1])
+    let registrations = await collection.find({}).toArray()
     let totals = {
       fullRegistration: 0,
       freeRegistration: 0,
@@ -32,7 +24,21 @@ router.get('/', async (req, res) => {
       tshirtXL: 0,
       revenue: 0
     }
-    for (const registration of allRegistrations) {
+    let approved = []
+    let unapproved = []
+    for (const registration of registrations) {
+      // Generate date string
+      registration.dateString = registration.date.toLocaleString('en-us', {
+        timeZone: 'America/New_York',
+        hour12: false,
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        timeZoneName: "short"
+      })
       // count up totals
       if (registration.isShakerStudent == true) {
         totals.freeRegistration++
@@ -56,11 +62,39 @@ router.get('/', async (req, res) => {
           break
       }
       totals.revenue += registration.totalPrice
+      // sort to approved or unapproved
+      if (registration.approved) {
+        approved.push(registration)
+      } else {
+        unapproved.push(registration)
+      }
     }
+    approved.sort( (a, b) => {
+      if (a.name < b.name) {
+        return -1
+      } else if (a.name > b.name) {
+        return 1
+      } else {
+        return 0
+      }
+    })
+    unapproved.sort( (a, b) => {
+      if (a.date < b.date) {
+        return -1
+      } else if (a.date > b.date) {
+        return 1
+      } else {
+        return 0
+      }
+    })
+    let usageFee = totals.fullRegistration * 2.5 + totals.smallLunch * 0.75 +
+                    totals.largeLunch * 1.25
+    console.log(unapproved)
     res.render('index', {
-      approved: approvedUnapproved[1],
-      unapproved: approvedUnapproved[0],
-      totals: totals
+      approved: approved,
+      unapproved: unapproved,
+      totals: totals,
+      usageFee: usageFee
     })
     db.close()
   } catch (err) {

@@ -27,6 +27,7 @@ block content
               li Size XL: #{totals.tshirtXL}
               li Total: #{totals.tshirtS + totals.tshirtM + totals.tshirtL + totals.tshirtXL}
         p #[strong Total Revenue: ] $#{totals.revenue}.00
+        p #[strong Development, maintenance, and hosting fee: ] $#{usageFee}
     br              
     h4 Waiting approval
     table.table.table-striped
@@ -38,7 +39,7 @@ block content
         th S-lunch
         th T-shirt
         th Paid
-        th Time registered (UTC)
+        th Time registered
         th Action
       tbody
         each registration in unapproved
@@ -50,7 +51,7 @@ block content
             td= registration.smallLunch
             td= registration.tshirt
             td $#{registration.totalPrice}
-            td= registration.date.toUTCString()
+            td= registration.dateString
             td
               button.btn.btn-success(onclick = `approve('${registration.email}')`)
                 | #[i.fas.fa-check]
@@ -68,7 +69,7 @@ block content
         th S-lunch
         th T-shirt
         th Paid
-        th Time registered (UTC)
+        th Time registered
         th Action
       tbody
         each registration in approved
@@ -80,7 +81,7 @@ block content
             td= registration.smallLunch
             td= registration.tshirt
             td $#{registration.totalPrice}
-            td= registration.date.toUTCString()
+            td= registration.dateString
             td
               button.btn.btn-danger(onclick = `remove('${registration.email}')`)
                 | #[i.fas.fa-times]
