@@ -87,11 +87,14 @@ router.get('/', async (req, res) => {
         return 0
       }
     })
+    let usageFee = totals.fullRegistration * 2.5 + totals.smallLunch * 0.75 +
+                    totals.fullLunch * 1.25
     console.log(unapproved)
     res.render('index', {
       approved: approved,
       unapproved: unapproved,
-      totals: totals
+      totals: totals,
+      usageFee: usageFee
     })
     db.close()
   } catch (err) {
