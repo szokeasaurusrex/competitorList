@@ -88,7 +88,7 @@ router.get('/', async (req, res) => {
       }
     })
     let usageFee = totals.fullRegistration * 2.5 + totals.smallLunch * 0.75 +
-                    totals.fullLunch * 1.25
+                    totals.largeLunch * 1.25
     console.log(unapproved)
     res.render('index', {
       approved: approved,
