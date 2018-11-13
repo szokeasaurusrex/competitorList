@@ -70,8 +70,8 @@ router.get('/', async (req, res) => {
       }
     }
     approved.sort( (a, b) => {
-      const cleanA = a.trim().toUpperCase()
-      const cleanB = b.trim().toUpperCase()
+      const cleanA = a.name.trim().toUpperCase()
+      const cleanB = b.name.trim().toUpperCase()
       if (cleanA < cleanB) {
         return -1
       } else if (cleanA > cleanB) {
