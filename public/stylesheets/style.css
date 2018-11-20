@@ -5,3 +5,18 @@
   width: 3px;
   display: inline-block;
 }
+#printable-view {
+  display: none;
+}
+#toggle {
+  margin-bottom: 20px;
+}
+
+@media print {
+  #printable-view {
+    display: block;
+  }
+  #normal-view {
+    display: none;
+  }
+}
